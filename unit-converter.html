@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Unit Converter - Length, Weight & Temperature | ToolNest India</title>
+
+    <meta name="description"
+        content="Free unit converter for length, weight and temperature. Convert km, meter, feet, inch, kg, gram, pound, Celsius and Fahrenheit.">
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .converter-page {
+            max-width: 750px;
+            margin: auto;
+            padding: 35px 20px;
+        }
+
+        .converter-box {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .converter-box label {
+            display: block;
+            font-weight: bold;
+            margin: 15px 0 8px;
+        }
+
+        .converter-box select,
+        .converter-box input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .convert-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .result {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background: #f1f5ff;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .result-number {
+            font-size: 28px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .error {
+            display: none;
+            color: #dc2626;
+            margin-top: 12px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">ToolNest<span> India</span></div>
+
+    <button id="menuBtn">☰</button>
+
+    <nav id="nav">
+        <a href="index.html">Home</a>
+        <a href="index.html#calculators">Calculators</a>
+        <a href="index.html#tools">Tools</a>
+        <a href="index.html#about">About</a>
+    </nav>
+</header>
+
+<main>
+
+    <div class="ad-box">
+        Advertisement
+    </div>
+
+    <section class="converter-page">
+
+        <a class="back-btn" href="index.html">
+            ← Back to Home
+        </a>
+
+        <h1>Unit Converter</h1>
+
+        <p>
+            Convert length, weight and temperature units quickly and easily.
+        </p>
+
+        <br>
+
+        <div class="converter-box">
+
+            <label for="category">
+                Select Category
+            </label>
+
+            <select id="category" onchange="changeUnits()">
+                <option value="length">Length</option>
+                <option value="weight">Weight</option>
+                <option value="temperature">Temperature</option>
+            </select>
+
+
+            <label for="value">
+                Enter Value
+            </label>
+
+            <input
+                type="number"
+                id="value"
+                placeholder="Example: 10"
+            >
+
+
+            <label for="fromUnit">
+                From
+            </label>
+
+            <select id="fromUnit"></select>
+
+
+            <label for="toUnit">
+                To
+            </label>
+
+            <select id="toUnit"></select>
+
+
+            <button
+                class="convert-btn"
+                onclick="convertUnit()"
+            >
+                Convert
+            </button>
+
+            <p class="error" id="error">
+                Please enter a valid number.
+            </p>
+
+
+            <div class="result" id="result">
+
+                <p>Converted Result</p>
+
+                <div
+                    class="result-number"
+                    id="resultValue"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer>
+
+    <p>© 2026 ToolNest India</p>
+
+    <div>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+    </div>
+
+</footer>
+
+
+<script>
+
+const menuBtn =
+    document.getElementById("menuBtn");
+
+const nav =
+    document.getElementById("nav");
+
+menuBtn.addEventListener("click", function () {
+    nav.classList.toggle("show");
+});
+
+
+const units = {
+
+    length: {
+        meter: "Meter",
+        kilometer: "Kilometer",
+        centimeter: "Centimeter",
+        millimeter: "Millimeter",
+        feet: "Feet",
+        inch: "Inch",
+        yard: "Yard",
+        mile: "Mile"
+    },
+
+    weight: {
+        kilogram: "Kilogram",
+        gram: "Gram",
+        milligram: "Milligram",
+        pound: "Pound",
+        ounce: "Ounce"
+    },
+
+    temperature: {
+        celsius: "Celsius",
+        fahrenheit: "Fahrenheit",
+        kelvin: "Kelvin"
+    }
+
+};
+
+
+function changeUnits() {
+
+    const category =
+        document.getElementById("category").value;
+
+    const from =
+        document.getElementById("fromUnit");
+
+    const to =
+        document.getElementById("toUnit");
+
+    from.innerHTML = "";
+    to.innerHTML = "";
+
+    for (const unit in units[category]) {
+
+        from.innerHTML +=
+            `<option value="${unit}">
+                ${units[category][unit]}
+            </option>`;
+
+        to.innerHTML +=
+            `<option value="${unit}">
+                ${units[category][unit]}
+            </option>`;
+    }
+
+    document.getElementById("result").style.display = "none";
+}
+
+
+function convertUnit() {
+
+    const category =
+        document.getElementById("category").value;
+
+    const value =
+        parseFloat(
+            document.getElementById("value").value
+        );
+
+    const from =
+        document.getElementById("fromUnit").value;
+
+    const to =
+        document.getElementById("toUnit").value;
+
+    const error =
+        document.getElementById("error");
+
+    const result =
+        document.getElementById("result");
+
+    if (isNaN(value)) {
+
+        error.style.display = "block";
+        result.style.display = "none";
+
+        return;
+    }
+
+    error.style.display = "none";
+
+    let converted;
+
+
+    /* LENGTH */
+
+    if (category === "length") {
+
+        const meterValues = {
+
+            meter: 1,
+            kilometer: 1000,
+            centimeter: 0.01,
+            millimeter: 0.001,
+            feet: 0.3048,
+            inch: 0.0254,
+            yard: 0.9144,
+            mile: 1609.344
+
+        };
+
+        const meters =
+            value * meterValues[from];
+
+        converted =
+            meters / meterValues[to];
+    }
+
+
+    /* WEIGHT */
+
+    if (category === "weight") {
+
+        const kgValues = {
+
+            kilogram: 1,
+            gram: 0.001,
+            milligram: 0.000001,
+            pound: 0.45359237,
+            ounce: 0.028349523125
+
+        };
+
+        const kilograms =
+            value * kgValues[from];
+
+        converted =
+            kilograms / kgValues[to];
+    }
+
+
+    /* TEMPERATURE */
+
+    if (category === "temperature") {
+
+        let celsius;
+
+        if (from === "celsius") {
+            celsius = value;
+        }
+
+        else if (from === "fahrenheit") {
+            celsius = (value - 32) * 5 / 9;
+        }
+
+        else if (from === "kelvin") {
+            celsius = value - 273.15;
+        }
+
+
+        if (to === "celsius") {
+            converted = celsius;
+        }
+
+        else if (to === "fahrenheit") {
+            converted = (celsius * 9 / 5) + 32;
+        }
+
+        else if (to === "kelvin") {
+            converted = celsius + 273.15;
+        }
+    }
+
+
+    document.getElementById("resultValue").textContent =
+        converted.toLocaleString("en-IN", {
+            maximumFractionDigits: 6
+        });
+
+    result.style.display = "block";
+}
+
+
+changeUnits();
+
+</script>
+
+</body>
+</html>

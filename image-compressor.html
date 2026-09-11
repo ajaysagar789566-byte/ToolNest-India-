@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Compressor Online - ToolNest India</title>
+  <meta name="description" content="Compress images online for free. Reduce JPG, PNG and WebP image size directly in your browser.">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .tool-page {
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+
+    .tool-box {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+
+    .upload-box {
+      border: 2px dashed #2563eb;
+      padding: 35px 15px;
+      border-radius: 12px;
+      margin: 20px 0;
+      cursor: pointer;
+    }
+
+    .upload-box input {
+      margin-top: 15px;
+    }
+
+    .preview {
+      max-width: 100%;
+      max-height: 300px;
+      margin: 20px auto;
+      border-radius: 10px;
+      display: none;
+    }
+
+    .controls {
+      text-align: left;
+      margin-top: 20px;
+    }
+
+    .controls label {
+      display: block;
+      margin: 15px 0 8px;
+      font-weight: bold;
+    }
+
+    .controls input,
+    .controls select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    .compress-btn {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .compress-btn:hover {
+      background: #1d4ed8;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f3f4f6;
+      border-radius: 10px;
+      display: none;
+    }
+
+    #downloadBtn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 12px 20px;
+      background: #16a34a;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    .info {
+      margin-top: 30px;
+      text-align: left;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">ToolNest India</div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="index.html#calculators">Calculators</a>
+      <a href="index.html#tools">Tools</a>
+      <a href="index.html#about">About</a>
+    </nav>
+  </header>
+
+  <main class="tool-page">
+
+    <div class="tool-box">
+
+      <h1>Image Compressor</h1>
+
+      <p>Compress your image online and reduce its file size.</p>
+
+      <div class="upload-box">
+        <strong>Select an Image</strong>
+        <br>
+        <input type="file" id="imageInput" accept="image/*">
+      </div>
+
+      <img id="preview" class="preview" alt="Image Preview">
+
+      <div class="controls">
+
+        <label for="quality">
+          Image Quality: <span id="qualityValue">70%</span>
+        </label>
+
+        <input
+          type="range"
+          id="quality"
+          min="10"
+          max="100"
+          value="70"
+        >
+
+        <label for="format">Output Format</label>
+
+        <select id="format">
+          <option value="image/jpeg">JPG</option>
+          <option value="image/webp">WebP</option>
+          <option value="image/png">PNG</option>
+        </select>
+
+      </div>
+
+      <button class="compress-btn" id="compressBtn">
+        Compress Image
+      </button>
+
+      <div id="result">
+        <div id="sizeInfo"></div>
+        <a id="downloadBtn" download="compressed-image.jpg">
+          Download Compressed Image
+        </a>
+      </div>
+
+    </div>
+
+    <div class="info">
+
+      <h2>Free Online Image Compressor</h2>
+
+      <p>
+        ToolNest India's Image Compressor helps you reduce image file size
+        quickly and easily. You can select JPG, PNG or other image files
+        and compress them directly in your browser.
+      </p>
+
+      <h2>How to Compress an Image?</h2>
+
+      <ol>
+        <li>Select your image.</li>
+        <li>Choose the image quality.</li>
+        <li>Select the output format.</li>
+        <li>Click "Compress Image".</li>
+        <li>Download your compressed image.</li>
+      </ol>
+
+      <h2>Is my image uploaded?</h2>
+
+      <p>
+        No. The compression is performed directly in your browser using
+        JavaScript and Canvas. Your image does not need to be uploaded
+        to a server.
+      </p>
+
+    </div>
+
+  </main>
+
+  <footer>
+    <p>© 2026 ToolNest India. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    const imageInput = document.getElementById("imageInput");
+    const preview = document.getElementById("preview");
+    const quality = document.getElementById("quality");
+    const qualityValue = document.getElementById("qualityValue");
+    const format = document.getElementById("format");
+    const compressBtn = document.getElementById("compressBtn");
+    const result = document.getElementById("result");
+    const sizeInfo = document.getElementById("sizeInfo");
+    const downloadBtn = document.getElementById("downloadBtn");
+
+    let selectedFile = null;
+
+    quality.addEventListener("input", function () {
+      qualityValue.textContent = quality.value + "%";
+    });
+
+    imageInput.addEventListener("change", function () {
+
+      const file = imageInput.files[0];
+
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        alert("Please select an image file.");
+        return;
+      }
+
+      selectedFile = file;
+
+      const imageURL = URL.createObjectURL(file);
+
+      preview.src = imageURL;
+      preview.style.display = "block";
+
+      result.style.display = "none";
+    });
+
+    compressBtn.addEventListener("click", function () {
+
+      if (!selectedFile) {
+        alert("Please select an image first.");
+        return;
+      }
+
+      const img = new Image();
+
+      img.onload = function () {
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = img.width;
+        canvas.height = img.height;
+
+        ctx.drawImage(img, 0, 0);
+
+        const selectedFormat = format.value;
+        const qualityValueNumber = Number(quality.value) / 100;
+
+        canvas.toBlob(function (blob) {
+
+          if (!blob) {
+            alert("Compression failed. Please try another image.");
+            return;
+          }
+
+          const downloadURL = URL.createObjectURL(blob);
+
+          downloadBtn.href = downloadURL;
+
+          let extension = "jpg";
+
+          if (selectedFormat === "image/webp") {
+            extension = "webp";
+          }
+
+          if (selectedFormat === "image/png") {
+            extension = "png";
+          }
+
+          downloadBtn.download = "compressed-image." + extension;
+
+          const originalKB = (selectedFile.size / 1024).toFixed(2);
+          const compressedKB = (blob.size / 1024).toFixed(2);
+
+          const savedPercent =
+            Math.max(
+              0,
+              ((selectedFile.size - blob.size) / selectedFile.size) * 100
+            ).toFixed(1);
+
+          sizeInfo.innerHTML =
+            "<strong>Compression Complete!</strong><br><br>" +
+            "Original Size: " + originalKB + " KB<br>" +
+            "Compressed Size: " + compressedKB + " KB<br>" +
+            "Size Reduced: " + savedPercent + "%";
+
+          result.style.display = "block";
+
+        }, selectedFormat, qualityValueNumber);
+
+      };
+
+      img.src = URL.createObjectURL(selectedFile);
+
+    });
+  </script>
+
+</body>
+</html>
